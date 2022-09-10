@@ -1,5 +1,12 @@
 # TCC-project
- 
+bibliotecas:
+
+mediapipe;
+openCV;
+numpy;
+pycaw;
+time;
+math;
 
 # classe que detecta as mãos utilizando módulo hands do mediapipe:
     class Detector():
@@ -11,7 +18,7 @@
     def EncontraPosicao()
     você pode escolher em qual landmark (de 0 até 21) deseja que o programa faça o rastreamento
     na linha de código  if len(lmList) != 0:
-        print(lmList[0]) sendo [posição]
+        print(lmList[0]) sendo [posição] ou de todos os landmarks: 'print(lmList)'
 
 # método de sincronização:
     main()

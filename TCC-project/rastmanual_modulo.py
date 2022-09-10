@@ -41,6 +41,31 @@ class Detector():
                     cv2.circle(img, (cx, cy), 15, (255,0,255), cv2.FILLED)
 
         return lmList
+    def Disting(self, img):
+
+        myHands =[]
+        handsType = []
+        imgRGB=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+        results=self.hands.process(imgRGB)
+
+        if results.multi_hand_landmarks != None:
+            #print(results.multi_handedness)
+            for hand in results.multi_handedness:
+                #print(hand)
+                #print(hand.classification)
+                #print(hand.classification[0])
+                handType = hand.classification[0].label
+                handsType.append(handType)
+            for handLandMarks in results.multi_hand_landmarks:
+                myHand=[]
+                for landMark in handLandMarks.landmark:
+                    myHand.append((int(landMark.x*width),int(landMark.y*height)))
+                myHands.append(myHand)
+        return myHands, handsType
+
+width=640
+height=480
+findHands= Detector(4)
 
 def main():
 
@@ -52,10 +77,19 @@ def main():
 
     while True:
         success, img = cap.read()
-        img = detector.EncontraMãos(img)
-        lmList = detector.EncontraPosicao(img)
+        img = detector.EncontraMãos(img, draw=False)
+        lmList = detector.EncontraPosicao(img, draw=False)
         if len(lmList) != 0:
-            print(lmList[4])
+            #print(lmList[4])
+            img=cv2.resize(img,(width,height))
+            handData, handsType = findHands.Disting(img)
+            for hand, handType in zip(handData, handsType):
+                for ind in [0,5,6,7,8]:
+                    if handType == 'Right':
+                        handColor = (255, 0, 0)
+                    if handType == 'Left':
+                        handColor = (0, 0, 255)
+                    cv2.circle(img,hand[ind],15, handColor, 5)
 
         cTime = time.time()
         fps = 1/(cTime-pTime)
